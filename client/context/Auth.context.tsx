@@ -7,7 +7,7 @@ export const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   const getUser = async () => {
@@ -81,9 +81,37 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const updateProfile = async (profileData: {
+    fullName?: string;
+    phone?: string;
+    address?: string;
+    photo?: string;
+  }) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await axiosInstance.put("/users/me", profileData);
+      setUser(res.data.user);
+      return res.data.message;
+    } catch (error) {
+      console.log(error);
+      setError("Profile update failed");
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <AuthContext.Provider
-      value={{ user, loading, error, getUser, register, login, logout }}
+      value={{
+        user,
+        loading,
+        error,
+        getUser,
+        register,
+        login,
+        logout,
+        updateProfile,
+      }}
     >
       {children}
     </AuthContext.Provider>

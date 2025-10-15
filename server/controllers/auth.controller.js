@@ -125,5 +125,61 @@ export const Logout = async (req, res) => {
 };
 
 export const GetCurrentUser = async (req, res) => {
-  return res.status(200).json({ user: req.user });
+  const userId = req.user.id;
+  try {
+    const user = await User.findById(userId).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    return res.status(200).json({
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        fullName: user.fullName,
+        profilePic: user.profilePic,
+        address: user.address,
+        phone: user.phone,
+      },
+    });
+  } catch (error) {
+    console.error("Error in GetCurrentUser controller:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const UpdateProfile = async (req, res) => {
+  const userId = req.user.id;
+  const { username, fullName, profilePic, address, phone } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (username !== undefined) user.username = username;
+    if (fullName !== undefined) user.fullName = fullName;
+    if (profilePic !== undefined) user.profilePic = profilePic;
+    if (address !== undefined) user.address = address;
+    if (phone !== undefined) user.phone = phone;
+
+    await user.save();
+
+    return res.status(200).json({
+      message: "Profile updated successfully",
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        fullName: user.fullName,
+        profilePic: user.profilePic,
+        address: user.address,
+        phone: user.phone,
+      },
+    });
+  } catch (error) {
+    console.error("Error in UpdateProfile controller:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };

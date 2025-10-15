@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/Auth.context";
@@ -6,6 +7,7 @@ import { ThemeToggle } from "./ThemeToggle";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -36,14 +38,47 @@ export default function Navbar() {
           <div className="hidden md:flex items-center justify-end ml-auto space-x-4">
             {user ? (
               <>
-                <motion.span
+                <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="text-gray-700 dark:text-gray-200 font-medium text-sm"
+                  className="flex items-center space-x-2"
                 >
-                  Welcome, {user.username}
-                </motion.span>
+                  {user.profilePic ? (
+                    <Image
+                      src={user.profilePic}
+                      alt="Profile"
+                      width={32}
+                      height={32}
+                      className="rounded-full border-2 border-gray-300 dark:border-gray-700 object-cover"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-gray-500 dark:text-gray-400 text-sm font-medium">
+                      {user.fullName?.charAt(0) ||
+                        user.username?.charAt(0) ||
+                        "U"}
+                    </div>
+                  )}
+                  <span className="text-gray-700 dark:text-gray-200 font-medium text-sm">
+                    Welcome, {user.username}
+                  </span>
+                </motion.div>
+                <Link href="/profile">
+                  <Button
+                    variant="ghost"
+                    className="rounded-full text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800/50 text-sm font-medium px-4 py-1.5 transition-colors duration-300"
+                  >
+                    Profile
+                  </Button>
+                </Link>
+                <Link href="/dashboard">
+                  <Button
+                    variant="ghost"
+                    className="rounded-full text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800/50 text-sm font-medium px-4 py-1.5 transition-colors duration-300"
+                  >
+                    Dashboard
+                  </Button>
+                </Link>
                 <Button
                   variant="outline"
                   className="rounded-full border-indigo-500 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 text-sm font-medium px-4 py-1.5 transition-colors duration-300"
@@ -51,6 +86,7 @@ export default function Navbar() {
                 >
                   Logout
                 </Button>
+                <ThemeToggle />
               </>
             ) : (
               <>
@@ -102,9 +138,44 @@ export default function Navbar() {
               <div className="px-4 pt-4 pb-6 space-y-3">
                 {user ? (
                   <>
-                    <div className="text-gray-700 dark:text-gray-200 font-medium text-sm py-2">
-                      Welcome, {user.username}
+                    <div className="flex items-center space-x-2 py-2">
+                      {user.profilePic ? (
+                        <Image
+                          src={user.profilePic}
+                          alt="Profile"
+                          width={32}
+                          height={32}
+                          className="rounded-full border-2 border-gray-300 dark:border-gray-700 object-cover"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-gray-500 dark:text-gray-400 text-sm font-medium">
+                          {user.fullName?.charAt(0) ||
+                            user.username?.charAt(0) ||
+                            "U"}
+                        </div>
+                      )}
+                      <span className="text-gray-700 dark:text-gray-200 font-medium text-sm">
+                        Welcome, {user.username}
+                      </span>
                     </div>
+                    <Link href="/profile">
+                      <Button
+                        variant="ghost"
+                        className="w-full rounded-full text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800/50 text-sm font-medium py-2 transition-colors duration-300"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Profile
+                      </Button>
+                    </Link>
+                    <Link href="/dashboard">
+                      <Button
+                        variant="ghost"
+                        className="w-full rounded-full text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800/50 text-sm font-medium py-2 transition-colors duration-300"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Dashboard
+                      </Button>
+                    </Link>
                     <Button
                       variant="outline"
                       className="w-full rounded-full border-indigo-500 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 text-sm font-medium py-2 transition-colors duration-300"

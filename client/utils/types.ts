@@ -3,6 +3,9 @@ export interface User {
   username: string;
   email: string;
   fullName?: string;
+  phone?: string;
+  address?: string;
+  profilePic?: string;
 }
 
 export interface AuthContextType {
@@ -18,4 +21,10 @@ export interface AuthContextType {
   loading: boolean;
   error: string | null;
   getUser: () => Promise<void>;
+  updateProfile: (profileData: {
+    fullName?: string;
+    phone?: string;
+    address?: string;
+    profilePic?: string;
+  }) => Promise<void>;
 }

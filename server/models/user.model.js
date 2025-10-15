@@ -27,6 +27,18 @@ const userSchema = new mongoose.Schema(
       minlength: [2, "Full name must be at least 2 characters"],
       maxlength: [50, "Full name can't exceed 50 characters"],
     },
+    profilePic: {
+      type: String,
+      default: "",
+    },
+    address: {
+      type: String,
+      default: "",
+    },
+    phone: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );
